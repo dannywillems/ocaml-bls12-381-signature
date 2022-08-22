@@ -1,6 +1,6 @@
 # OCaml implementation of BLS signatures for BLS12-381
 
-Fllow the BLS signatures described in [this
+Follow the BLS signatures described in [this
 specification](https://tools.ietf.org/pdf/draft-irtf-cfrg-bls-signature-04.pdf).
 Both instantiations, i.e. the one minimizing the public key size and the one
 minimizing the signature size, are provided.
