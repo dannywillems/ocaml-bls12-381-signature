@@ -85,7 +85,8 @@ caml_bls12_381_signature_blst_pairing_commit_stubs(value buffer) {
   CAMLreturn(CAML_BLS12_381_OUTPUT_SUCCESS);
 }
 
-CAMLprim value caml_bls12_381_signature_blst_pairing_finalverify_stubs(value buffer) {
+CAMLprim value
+caml_bls12_381_signature_blst_pairing_finalverify_stubs(value buffer) {
   CAMLparam1(buffer);
   bool r = blst_pairing_finalverify(Blst_pairing_val(buffer), NULL);
   CAMLreturn(Val_bool(r));
