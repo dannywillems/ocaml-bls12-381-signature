@@ -1,0 +1,10 @@
+(copy_files bindings/blst_bindings_stubs.c)
+
+(library
+ (name bls12_381_signature)
+ (public_name bls12-381-signature)
+ (library_flags :standard -linkall -ccopt -lpthread)
+ (foreign_stubs
+  (language c)
+  (names blst_bindings_stubs))
+ (libraries bls12-381))
