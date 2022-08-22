@@ -1,0 +1,3 @@
+(executables
+ (names bench_signature)
+ (libraries bls12-381 core core_bench))
