@@ -9,7 +9,7 @@
 (executable
  (name generate_test_vectors_from_bls_sigs_ref_for_blst)
  (modules generate_test_vectors_from_bls_sigs_ref_for_blst)
- (libraries hex bls12-381 core))
+ (libraries hex bls12-381-signature core))
 
 (rule
  (alias generate_test_vectors_for_bls_sig_g2_basic)

@@ -3,50 +3,50 @@ open Utils
 (* Related to sk *)
 let test_sk_size_in_bytes () =
   let ikm = generate_random_bytes 32 in
-  let sk = Bls12_381.Signature.generate_sk ikm in
+  let sk = Bls12_381_signature.generate_sk ikm in
   assert (
-    Bls12_381.Signature.sk_size_in_bytes
-    = Bytes.length (Bls12_381.Signature.sk_to_bytes sk))
+    Bls12_381_signature.sk_size_in_bytes
+    = Bytes.length (Bls12_381_signature.sk_to_bytes sk))
 
 let test_sk_of_bytes_exn_and_to_bytes_are_inverse_functions () =
   let bytes = Bls12_381.Fr.(to_bytes (random ())) in
   assert (
-    Bytes.equal Bls12_381.Signature.(sk_to_bytes (sk_of_bytes_exn bytes)) bytes) ;
-  let sk = Bls12_381.Signature.(generate_sk (generate_random_bytes 32)) in
-  let sk_bytes = Bls12_381.Signature.sk_to_bytes sk in
+    Bytes.equal Bls12_381_signature.(sk_to_bytes (sk_of_bytes_exn bytes)) bytes) ;
+  let sk = Bls12_381_signature.(generate_sk (generate_random_bytes 32)) in
+  let sk_bytes = Bls12_381_signature.sk_to_bytes sk in
   assert (
     Bytes.equal
       sk_bytes
-      Bls12_381.Signature.(sk_to_bytes (sk_of_bytes_exn sk_bytes)))
+      Bls12_381_signature.(sk_to_bytes (sk_of_bytes_exn sk_bytes)))
 
 let test_sk_of_bytes_opt_and_to_bytes_are_inverse_functions () =
   let bytes = Bls12_381.Fr.(to_bytes (random ())) in
   assert (
     Bytes.equal
-      Bls12_381.Signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt bytes))
+      Bls12_381_signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt bytes))
       bytes) ;
-  let sk = Bls12_381.Signature.(generate_sk (generate_random_bytes 32)) in
-  let sk_bytes = Bls12_381.Signature.sk_to_bytes sk in
+  let sk = Bls12_381_signature.(generate_sk (generate_random_bytes 32)) in
+  let sk_bytes = Bls12_381_signature.sk_to_bytes sk in
   assert (
     Bytes.equal
       sk_bytes
-      Bls12_381.Signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt sk_bytes)))
+      Bls12_381_signature.(sk_to_bytes (Option.get @@ sk_of_bytes_opt sk_bytes)))
 
 let test_sk_of_bytes_opt_valid_values () =
   let bytes = Bytes.of_string @@ Z.to_bits Bls12_381.Fr.(to_z (random ())) in
-  assert (Option.is_some (Bls12_381.Signature.sk_of_bytes_opt bytes))
+  assert (Option.is_some (Bls12_381_signature.sk_of_bytes_opt bytes))
 
 let test_sk_of_bytes_exn_valid_values () =
   let bytes = Bytes.of_string @@ Z.to_bits Bls12_381.Fr.(to_z (random ())) in
-  ignore @@ Bls12_381.Signature.sk_of_bytes_exn bytes
+  ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes
 
 let test_sk_of_bytes_opt_accepts_less_than_32_bytes () =
   let bytes = generate_random_bytes (Random.int 32) in
-  assert (Option.is_some (Bls12_381.Signature.sk_of_bytes_opt bytes))
+  assert (Option.is_some (Bls12_381_signature.sk_of_bytes_opt bytes))
 
 let test_sk_of_bytes_exn_accepts_less_than_32_bytes () =
   let bytes = generate_random_bytes (Random.int 32) in
-  ignore (Bls12_381.Signature.sk_of_bytes_exn bytes)
+  ignore (Bls12_381_signature.sk_of_bytes_exn bytes)
 
 let test_sk_of_bytes_exn_does_not_accept_more_than_32_bytes () =
   let bytes = generate_random_bytes (32 + Random.int 1_000_000) in
@@ -55,11 +55,11 @@ let test_sk_of_bytes_exn_does_not_accept_more_than_32_bytes () =
      and must be smaller than the order of Bls12_381.Fr"
   in
   Alcotest.check_raises "" (Invalid_argument err_msg) (fun () ->
-      ignore @@ Bls12_381.Signature.sk_of_bytes_exn bytes)
+      ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes)
 
 let test_sk_of_bytes_opt_does_not_accept_more_than_32_bytes () =
   let bytes = generate_random_bytes (32 + Random.int 1_000_000) in
-  assert (Option.is_none (Bls12_381.Signature.sk_of_bytes_opt bytes))
+  assert (Option.is_none (Bls12_381_signature.sk_of_bytes_opt bytes))
 
 let test_sk_of_bytes_opt_does_not_accept_elements_higher_than_the_modulus_but_still_on_32_bytes
     () =
@@ -69,7 +69,7 @@ let test_sk_of_bytes_opt_does_not_accept_elements_higher_than_the_modulus_but_st
         char_of_int
         @@ if i = 31 then 116 + Random.int (256 - 116) else Random.int 256)
   in
-  assert (Option.is_none (Bls12_381.Signature.sk_of_bytes_opt r))
+  assert (Option.is_none (Bls12_381_signature.sk_of_bytes_opt r))
 
 let test_sk_of_bytes_exn_does_not_accept_elements_higher_than_the_modulus_but_still_on_32_bytes
     () =
@@ -84,7 +84,7 @@ let test_sk_of_bytes_exn_does_not_accept_elements_higher_than_the_modulus_but_st
      and must be smaller than the order of Bls12_381.Fr"
   in
   Alcotest.check_raises "" (Invalid_argument err_msg) (fun () ->
-      ignore @@ Bls12_381.Signature.sk_of_bytes_exn bytes)
+      ignore @@ Bls12_381_signature.sk_of_bytes_exn bytes)
 
 let test_keygen_raise_invalid_argument_if_ikm_too_small () =
   ignore
@@ -94,10 +94,10 @@ let test_keygen_raise_invalid_argument_if_ikm_too_small () =
           "generate_sk: ikm argument must be at least 32 bytes long")
        (fun () ->
          let ikm = generate_random_bytes (Random.int 32) in
-         ignore @@ Bls12_381.Signature.generate_sk ikm)
+         ignore @@ Bls12_381_signature.generate_sk ikm)
 
 (* Both can be used i.e. MinPk or MinSig. They must share the same interface. *)
-module type SIGNATURE_INSTANTIATION = module type of Bls12_381.Signature.MinPk
+module type SIGNATURE_INSTANTIATION = module type of Bls12_381_signature.MinPk
 
 module MakeTestsForInstantiation (MISC : sig
   val sig_basic_filenames : string list
@@ -118,14 +118,14 @@ end)
 struct
   let test_pk_size_in_bytes () =
     let ikm = generate_random_bytes 32 in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     assert (
       SignatureM.pk_size_in_bytes = Bytes.length (SignatureM.pk_to_bytes pk))
 
   let test_signature_size_in_bytes () =
     let ikm = generate_random_bytes 32 in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let msg_length = 1 + Random.int 512 in
     let msg = generate_random_bytes msg_length in
     let signature = SignatureM.Basic.sign sk msg in
@@ -441,7 +441,7 @@ struct
 
   let test_pop_prove_verify_with_correct_keys () =
     let ikm = generate_random_bytes 32 in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     (* sign a random message *)
     let proof = SignatureM.Pop.pop_prove sk in
@@ -450,22 +450,22 @@ struct
   let test_pop_prove_verify_with_different_pk_for_verify () =
     let ikm = generate_random_bytes 32 in
     let ikm' = generate_random_bytes 32 in
-    let sk = Bls12_381.Signature.generate_sk ikm in
-    let pk' = SignatureM.(derive_pk (Bls12_381.Signature.generate_sk ikm')) in
+    let sk = Bls12_381_signature.generate_sk ikm in
+    let pk' = SignatureM.(derive_pk (Bls12_381_signature.generate_sk ikm')) in
     (* sign a random message *)
     let proof = SignatureM.Pop.pop_prove sk in
     assert (not (SignatureM.Pop.pop_verify pk' proof))
 
   let test_pop_verify_random_proof () =
     let ikm = generate_random_bytes 32 in
-    let pk = SignatureM.(derive_pk (Bls12_381.Signature.generate_sk ikm)) in
+    let pk = SignatureM.(derive_pk (Bls12_381_signature.generate_sk ikm)) in
     let proof = generate_random_bytes (PkGroup.size_in_bytes / 2) in
     assert (not (SignatureM.Pop.pop_verify pk proof))
 
   module MakeProperties (Scheme : sig
     val test_vector_filenames : string list
 
-    val sign : Bls12_381.Signature.sk -> Bytes.t -> SignatureM.signature
+    val sign : Bls12_381_signature.sk -> Bytes.t -> SignatureM.signature
 
     val verify : SignatureM.pk -> Bytes.t -> SignatureM.signature -> bool
 
@@ -474,7 +474,7 @@ struct
   struct
     let test_sign_and_verify_same_message_with_correct_keys () =
       let ikm = generate_random_bytes 32 in
-      let sk = Bls12_381.Signature.generate_sk ikm in
+      let sk = Bls12_381_signature.generate_sk ikm in
       let pk = SignatureM.derive_pk sk in
       (* sign a random message *)
       let msg_length = 1 + Random.int 512 in
@@ -484,7 +484,7 @@ struct
 
     let test_sign_and_verify_different_message_with_correct_keys () =
       let ikm = generate_random_bytes 32 in
-      let sk = Bls12_381.Signature.generate_sk ikm in
+      let sk = Bls12_381_signature.generate_sk ikm in
       let pk = SignatureM.derive_pk sk in
       (* sign a random message *)
       let msg_length = 1 + Random.int 512 in
@@ -496,11 +496,11 @@ struct
 
     let test_sign_and_verify_different_message_with_different_keys () =
       let ikm = generate_random_bytes 32 in
-      let sk = Bls12_381.Signature.generate_sk ikm in
+      let sk = Bls12_381_signature.generate_sk ikm in
       let _pk = SignatureM.derive_pk sk in
 
       let ikm' = generate_random_bytes 32 in
-      let sk' = Bls12_381.Signature.generate_sk ikm' in
+      let sk' = Bls12_381_signature.generate_sk ikm' in
       let pk' = SignatureM.derive_pk sk' in
 
       (* sign a random message *)
@@ -513,11 +513,11 @@ struct
 
     let test_sign_and_verify_same_message_with_different_keys () =
       let ikm = generate_random_bytes 32 in
-      let sk = Bls12_381.Signature.generate_sk ikm in
+      let sk = Bls12_381_signature.generate_sk ikm in
       let _pk = SignatureM.derive_pk sk in
 
       let ikm' = generate_random_bytes 32 in
-      let sk' = Bls12_381.Signature.generate_sk ikm' in
+      let sk' = Bls12_381_signature.generate_sk ikm' in
       let pk' = SignatureM.derive_pk sk' in
 
       (* sign a random message *)
@@ -528,7 +528,7 @@ struct
 
     let test_full_sign_and_verify_with_different_ikm_sizes () =
       let ikm = generate_random_bytes (32 + Random.int 1000) in
-      let sk = Bls12_381.Signature.generate_sk ikm in
+      let sk = Bls12_381_signature.generate_sk ikm in
       let pk = SignatureM.derive_pk sk in
       (* sign a random message *)
       let msg_length = 1 + Random.int 512 in
@@ -541,7 +541,7 @@ struct
       List.iter
         (fun signature_hex ->
           let ikm = Bytes.init 32 (fun _i -> char_of_int @@ Random.int 256) in
-          let sk = Bls12_381.Signature.generate_sk ikm in
+          let sk = Bls12_381_signature.generate_sk ikm in
           let pk = SignatureM.derive_pk sk in
           let msg = Bytes.of_string "Hello" in
           let signature = Hex.(to_bytes (`Hex signature_hex)) in
@@ -554,7 +554,7 @@ struct
         (fun invalid_pk_bytes ->
           let invalid_pk_bytes = Hex.(to_bytes (`Hex invalid_pk_bytes)) in
           let sk =
-            Bls12_381.(Signature.sk_of_bytes_exn Bls12_381.Fr.(to_bytes one))
+            Bls12_381_signature.sk_of_bytes_exn Bls12_381.Fr.(to_bytes one)
           in
           let pk = SignatureM.unsafe_pk_of_bytes invalid_pk_bytes in
           let msg = Bytes.of_string "Hello" in
@@ -578,7 +578,7 @@ struct
             let ikm = Hex.to_bytes (`Hex ikm_str) in
             if Bytes.length ikm < 32 then ()
             else
-              let sk = Bls12_381.Signature.generate_sk ikm in
+              let sk = Bls12_381_signature.generate_sk ikm in
               let expected_result = Hex.(to_bytes (`Hex expected_result_str)) in
               let res = Scheme.sign sk msg in
               let res = SignatureM.signature_to_bytes res in
@@ -679,7 +679,7 @@ struct
           let ikm_bytes = Hex.(to_bytes (`Hex ikm_str)) in
           if Bytes.length ikm_bytes < 32 then ()
           else
-            let sk = Bls12_381.Signature.generate_sk ikm_bytes in
+            let sk = Bls12_381_signature.generate_sk ikm_bytes in
             let exp_result_bytes = Hex.(to_bytes (`Hex exp_result_str)) in
             let res = SignatureM.Pop.pop_prove sk in
             if not @@ Bytes.equal res exp_result_bytes then
@@ -999,7 +999,7 @@ let () =
       end)
       (Bls12_381.G1)
       (Bls12_381.G2)
-      (Bls12_381.Signature.MinPk)
+      (Bls12_381_signature.MinPk)
   in
   let module TestMinSig =
     MakeTestsForInstantiation
@@ -1090,7 +1090,7 @@ let () =
       end)
       (Bls12_381.G2)
       (Bls12_381.G1)
-      (Bls12_381.Signature.MinSig)
+      (Bls12_381_signature.MinSig)
   in
   let min_pk_tests = TestMinPk.get_tests () in
   let min_pk_tests =
