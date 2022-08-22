@@ -6,7 +6,7 @@ let generate_random_byte () = char_of_int (Random.int 256)
 let generate_random_bytes size =
   Bytes.init size ~f:(fun _ -> generate_random_byte ())
 
-module type SIGNATURE_INSTANTIATION = module type of Bls12_381.Signature.MinPk
+module type SIGNATURE_INSTANTIATION = module type of Bls12_381_signature.MinPk
 
 module MakeBenches (SignatureM : sig
   include SIGNATURE_INSTANTIATION
@@ -17,7 +17,7 @@ struct
   let t1 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let name =
       Printf.sprintf
         "%s -\nSign on random message of random size - Basic scheme"
@@ -28,7 +28,7 @@ struct
   let t2 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     Bench.Test.create
       ~name:"Sign on random message of random size - Aug scheme"
       (fun () -> ignore @@ SignatureM.Aug.sign sk msg)
@@ -36,7 +36,7 @@ struct
   let t3 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let name =
       Printf.sprintf
         "%s -\nSign on random message of random size - Pop scheme"
@@ -47,7 +47,7 @@ struct
   let t4 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Basic.sign sk msg in
     let name =
@@ -61,7 +61,7 @@ struct
   let t5 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Aug.sign sk msg in
     let name =
@@ -75,7 +75,7 @@ struct
   let t6 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Aug.sign sk msg in
     let name =
@@ -89,9 +89,9 @@ struct
   let t7 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let ikm' = generate_random_bytes 32 in
-    let sk' = Bls12_381.Signature.generate_sk ikm' in
+    let sk' = Bls12_381_signature.generate_sk ikm' in
     let pk' = SignatureM.derive_pk sk' in
     let signature = SignatureM.Basic.sign sk msg in
     let name =
@@ -105,9 +105,9 @@ struct
   let t8 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let ikm' = generate_random_bytes 32 in
-    let sk' = Bls12_381.Signature.generate_sk ikm' in
+    let sk' = Bls12_381_signature.generate_sk ikm' in
     let pk' = SignatureM.derive_pk sk' in
     let signature = SignatureM.Aug.sign sk msg in
     let name =
@@ -121,9 +121,9 @@ struct
   let t9 =
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let ikm' = generate_random_bytes 32 in
-    let sk' = Bls12_381.Signature.generate_sk ikm' in
+    let sk' = Bls12_381_signature.generate_sk ikm' in
     let pk' = SignatureM.derive_pk sk' in
     let signature = SignatureM.Pop.sign sk msg in
     let name =
@@ -138,7 +138,7 @@ struct
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
     let msg' = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Basic.sign sk msg in
     let name =
@@ -153,7 +153,7 @@ struct
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
     let msg' = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Aug.sign sk msg in
     let name =
@@ -168,7 +168,7 @@ struct
     let ikm = generate_random_bytes 32 in
     let msg = generate_random_bytes (1 + Random.int 512) in
     let msg' = generate_random_bytes (1 + Random.int 512) in
-    let sk = Bls12_381.Signature.generate_sk ikm in
+    let sk = Bls12_381_signature.generate_sk ikm in
     let pk = SignatureM.derive_pk sk in
     let signature = SignatureM.Pop.sign sk msg in
     let name =
@@ -183,7 +183,7 @@ struct
     let name = Printf.sprintf "%s - \nGenerate public keys" SignatureM.name in
     Bench.Test.create ~name (fun () ->
         let ikm = generate_random_bytes 32 in
-        let sk = Bls12_381.Signature.generate_sk ikm in
+        let sk = Bls12_381_signature.generate_sk ikm in
         let pk = SignatureM.derive_pk sk in
         ignore pk)
 
@@ -193,13 +193,13 @@ end
 module MinPkBenches = MakeBenches (struct
   let name = "minPk"
 
-  include Bls12_381.Signature.MinPk
+  include Bls12_381_signature.MinPk
 end)
 
 module MinSigBenches = MakeBenches (struct
   let name = "minSig"
 
-  include Bls12_381.Signature.MinSig
+  include Bls12_381_signature.MinSig
 end)
 
 let () =
