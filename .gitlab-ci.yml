@@ -70,10 +70,19 @@ lint-c:
     - eval $(opam env)
     - opam update
 
+    # Install emsdk to install emcc
+    - git clone https://github.com/emscripten-core/emsdk.git
+    - cd emsdk
+    - ./emsdk install latest
+    - ./emsdk activate latest
+    - source "./emsdk_env.sh"
+    - cd ../
+
     # List versions and environments
     - ocaml --version
     - opam --version
     - echo $OPAM_SWITCH_PREFIX
+    - emcc --version
   script:
     - opam install depext --yes
     - opam install . --dry-run --deps-only --locked --with-test --with-doc --yes | awk '/-> installed/{print $3}' | xargs opam depext -iy
@@ -82,6 +91,7 @@ lint-c:
     - dune build
     - dune build @install
     - dune build @runtest
+    - dune build @runtest-js
   rules:
     - when: always
 
@@ -162,6 +172,14 @@ build:
     - "[ -d _opam ] || opam switch create --yes --no-install . $OCAML_COMPILER"
     - eval $(opam env)
     - opam update
+
+    # Install emsdk to install emcc
+    - git clone https://github.com/emscripten-core/emsdk.git
+    - cd emsdk
+    - ./emsdk install latest
+    - ./emsdk activate latest
+    - source "./emsdk_env.sh"
+    - cd ../
 
     # List versions and environments
     - ocaml --version
