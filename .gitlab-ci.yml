@@ -69,6 +69,7 @@ lint-c:
     - sudo apt-get update
     - eval $(opam env)
     - opam update
+    - sudo apt-get install nodejs python3 -y
 
     # Install emsdk to install emcc
     - git clone https://github.com/emscripten-core/emsdk.git
@@ -172,6 +173,7 @@ build:
     - "[ -d _opam ] || opam switch create --yes --no-install . $OCAML_COMPILER"
     - eval $(opam env)
     - opam update
+    - sudo apt-get install nodejs python3 -y
 
     # Install emsdk to install emcc
     - git clone https://github.com/emscripten-core/emsdk.git
