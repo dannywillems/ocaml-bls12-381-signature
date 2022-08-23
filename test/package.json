@@ -1,5 +1,5 @@
 {
     "dependencies": {
-        "@dannywillems/ocaml-bls12-381": "4.0.0"
+        "@dannywillems/ocaml-bls12-381": "5.0.0"
     }
 }
