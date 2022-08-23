@@ -20,6 +20,7 @@ module.exports = {
         'prefer-const': 'off',
         'no-var': 'off',
         'comma-dangle': 'off',
-        'spaced-comment': 'off'
+        'spaced-comment': 'off',
+        'max-len': 'off'
     },
 };
