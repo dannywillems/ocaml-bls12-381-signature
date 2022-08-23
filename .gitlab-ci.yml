@@ -26,6 +26,17 @@ stages:
   - doc
   - deploy
 
+lint-js:
+  image: node:lts
+  stage: lint
+  before_script:
+    - cd .ci/js
+    - npm install -d
+  script:
+    - ./node_modules/eslint/bin/eslint.js -c .eslintrc.js ../../src/bindings/blst_bindings_stubs.js
+  rules:
+    - when: always
+
 lint:
   stage: lint
   image: ocaml/opam:debian-ocaml-4.12
