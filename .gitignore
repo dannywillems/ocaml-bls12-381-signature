@@ -6,7 +6,6 @@ _coverage
 node_modules
 *.o
 .ccls-cache
-.npmrc
 package-lock.json
 *.~undo-tree~
 src/c_flags_blst.sexp

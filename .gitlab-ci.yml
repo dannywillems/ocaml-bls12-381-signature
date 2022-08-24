@@ -26,6 +26,17 @@ stages:
   - doc
   - deploy
 
+lint-js:
+  image: node:lts
+  stage: lint
+  before_script:
+    - cd .ci/js
+    - npm install -d
+  script:
+    - ./node_modules/eslint/bin/eslint.js -c .eslintrc.js ../../src/bindings/blst_bindings_stubs.js
+  rules:
+    - when: always
+
 lint:
   stage: lint
   image: ocaml/opam:debian-ocaml-4.12
@@ -57,12 +68,23 @@ lint-c:
     # Always update system package manager + setup OPAM env
     - sudo apt-get update
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
+    - sudo apt-get install nodejs python3 -y
+
+    # Install emsdk to install emcc
+    - git clone https://github.com/emscripten-core/emsdk.git
+    - cd emsdk
+    - ./emsdk install latest
+    - ./emsdk activate latest
+    - source "./emsdk_env.sh"
+    - cd ../
 
     # List versions and environments
     - ocaml --version
     - opam --version
     - echo $OPAM_SWITCH_PREFIX
+    - emcc --version
   script:
     - opam install depext --yes
     - opam install . --dry-run --deps-only --locked --with-test --with-doc --yes | awk '/-> installed/{print $3}' | xargs opam depext -iy
@@ -71,6 +93,7 @@ lint-c:
     - dune build
     - dune build @install
     - dune build @runtest
+    - dune build @runtest-js
   rules:
     - when: always
 
@@ -150,7 +173,17 @@ build:
     - sudo apt-get update
     - "[ -d _opam ] || opam switch create --yes --no-install . $OCAML_COMPILER"
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
+    - sudo apt-get install nodejs python3 -y
+
+    # Install emsdk to install emcc
+    - git clone https://github.com/emscripten-core/emsdk.git
+    - cd emsdk
+    - ./emsdk install latest
+    - ./emsdk activate latest
+    - source "./emsdk_env.sh"
+    - cd ../
 
     # List versions and environments
     - ocaml --version
@@ -181,6 +214,7 @@ build:
   before_script:
     # Always update system package manager + setup OPAM env
     - eval $(opam env)
+    - opam repository set-url default https://opam.ocaml.org
     - opam update
     # List versions and environments
     - ocaml --version

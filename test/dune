@@ -1,5 +1,32 @@
 (tests
  (names test_aggregated_signature test_signature)
+ (modes native js)
  (deps
   (source_tree test_vectors))
- (libraries bls12-381-signature bls12-381 alcotest))
+ (libraries bls12-381-signature bls12-381 alcotest integers_stubs_js))
+
+(rule
+ (alias runtest-js)
+ (deps
+  (source_tree test_vectors)
+  preload.js
+  package.json
+  .npmrc
+  (:test test_signature.bc.js))
+ (action
+  (progn
+   (run npm install)
+   (run node -- preload.js %{test}))))
+
+(rule
+ (alias runtest-js)
+ (deps
+  (source_tree test_vectors)
+  preload.js
+  package.json
+  .npmrc
+  (:test test_aggregated_signature.bc.js))
+ (action
+  (progn
+   (run npm install)
+   (run node -- preload.js %{test}))))

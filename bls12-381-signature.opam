@@ -12,6 +12,7 @@ depends: [
   "bls12-381" {>= "5.0.0"}
   "alcotest" {with-test}
   "bisect_ppx" {with-test & >= "2.5"}
+  "integers_stubs_js" {with-test}
 ]
 build: [[ "dune" "build" "-j" jobs "-p" name "@install" ]]
 run-test: [[ "dune" "runtest" "-p" name "-j" jobs ]]
@@ -20,7 +21,4 @@ x-ci-accept-failures: [
   # because of -Werror
   "centos-7"
   "oraclelinux-7"
-]
-pin-depends: [
-  ["bls12-381.5.0.0" "git+https://gitlab.com/dannywillems/ocaml-bls12-381#5.0.0-rc.0"]
 ]
