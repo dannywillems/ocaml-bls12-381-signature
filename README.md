@@ -5,7 +5,7 @@ specification](https://tools.ietf.org/pdf/draft-irtf-cfrg-bls-signature-04.pdf).
 Both instantiations, i.e. the one minimizing the public key size and the one
 minimizing the signature size, are provided.
 
-Documentation available [here](https://dannywillems.gitlab.io/ocaml-bls12-381-signature)
+Documentation available [here](https://nomadic-labs.gitlab.io/cryptography/ocaml-bls12-381-signature/bls12-381-signature/)
 
 ## Install
 
