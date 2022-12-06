@@ -133,6 +133,10 @@ CAMLprim value caml_bls12_381_signature_blst_aggregate_signature_pk_in_g1_stubs(
 CAMLprim value
 caml_bls12_381_signature_blst_aggregate_signature_pk_in_g1_stubs_bytecode(
     value *argv, int argn) {
+  if (argn != 7) {
+    caml_failwith("caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_"
+                  "in_g2_stubs_bytecode: wrong value argn");
+  }
   return caml_bls12_381_signature_blst_aggregate_signature_pk_in_g1_stubs(
       argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
@@ -162,6 +166,10 @@ caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g1_stubs(
 CAMLprim value
 caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g1_stubs_bytecode(
     value *argv, int argn) {
+  if (argn != 11) {
+    caml_failwith("caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_"
+                  "in_g2_stubs_bytecode: wrong value argn");
+  }
   return caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g1_stubs(
       argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
       argv[8], argv[9], argv[10]);
@@ -198,6 +206,10 @@ CAMLprim value caml_bls12_381_signature_blst_aggregate_signature_pk_in_g2_stubs(
 CAMLprim value
 caml_bls12_381_signature_blst_aggregate_signature_pk_in_g2_stubs_bytecode(
     value *argv, int argn) {
+  if (argn != 7) {
+    caml_failwith("caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_"
+                  "in_g2_stubs_bytecode: wrong value argn");
+  }
   return caml_bls12_381_signature_blst_aggregate_signature_pk_in_g2_stubs(
       argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
@@ -227,6 +239,10 @@ caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g2_stubs(
 CAMLprim value
 caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g2_stubs_bytecode(
     value *argv, int argn) {
+  if (argn != 11) {
+    caml_failwith("caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_"
+                  "in_g2_stubs_bytecode: wrong value argn");
+  }
   return caml_bls12_381_signature_blst_pairing_chk_n_mul_n_aggr_pk_in_g2_stubs(
       argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
       argv[8], argv[9], argv[10]);
