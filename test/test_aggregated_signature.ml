@@ -9,8 +9,6 @@ struct
   module type SIG_SCHEME = sig
     val sign : Bls12_381_signature.sk -> Bytes.t -> SignatureM.signature
 
-    val verify : SignatureM.pk -> Bytes.t -> SignatureM.signature -> bool
-
     val aggregate_verify :
       (SignatureM.pk * Bytes.t) list -> SignatureM.signature -> bool
   end

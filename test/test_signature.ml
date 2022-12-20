@@ -622,6 +622,13 @@ struct
                100
                test_sign_and_verify_different_message_with_different_keys);
           test_case
+            "Test verify signature which represents point on the curve but not \
+             in the prime subgroup"
+            `Quick
+            (Utils.repeat
+               100
+               test_verify_signature_which_represents_point_on_the_curve_but_not_in_the_prime_subgroup);
+          test_case
             "Test full sign and verify with different ikm sizes"
             `Quick
             (Utils.repeat
@@ -1117,6 +1124,14 @@ let () =
            "sk_of_bytes_opt valid values"
            `Quick
            test_sk_of_bytes_opt_valid_values;
+         test_case
+           "sk_of_bytes_exn accepts less than 32 bytes"
+           `Quick
+           test_sk_of_bytes_exn_accepts_less_than_32_bytes;
+         test_case
+           "sk_of_bytes_opt accepts less than 32 bytes"
+           `Quick
+           test_sk_of_bytes_opt_accepts_less_than_32_bytes;
          test_case
            "sk_of_bytes_exn does not accept more than 32 bytes"
            `Quick
