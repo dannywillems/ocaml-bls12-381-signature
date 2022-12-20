@@ -308,9 +308,9 @@ opam-install-and-remove:
     - opam update
   script:
     - opam pin add ${OPAM_PACKAGE}.dev . --no-action
-    - opam depext ${OPAM_PACKAGE}.dev -i -y -v
-    - opam install ${OPAM_PACKAGE}.dev -y -v --deps-only
-    - opam install ${OPAM_PACKAGE}.dev -y -v
+    - opam depext ${OPAM_PACKAGE}.dev -i -y
+    - opam install ${OPAM_PACKAGE}.dev -y --deps-only
+    - opam install ${OPAM_PACKAGE}.dev -y
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
@@ -330,9 +330,9 @@ opam-install-and-remove-local-switch:
     - opam update
   script:
     - opam pin add ${OPAM_PACKAGE}.dev . --no-action
-    - opam depext ${OPAM_PACKAGE}.dev -i -y -v
-    - opam install ${OPAM_PACKAGE}.dev -y -v --deps-only
-    - opam install ${OPAM_PACKAGE}.dev -y -v
+    - opam depext ${OPAM_PACKAGE}.dev -i -y
+    - opam install ${OPAM_PACKAGE}.dev -y --deps-only
+    - opam install ${OPAM_PACKAGE}.dev -y
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
