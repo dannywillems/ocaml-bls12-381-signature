@@ -204,4 +204,4 @@ end)
 
 let () =
   let commands = List.concat [MinPkBenches.benches; MinSigBenches.benches] in
-  Core.Command.run (Bench.make_command commands)
+  Command_unix.run (Bench.make_command commands)
