@@ -2,12 +2,17 @@
 # _opam and _build directory.
 variables:
   IMAGE_WITH_CACHE: "ocaml/opam:debian-testing-opam"
-  OPAM_PACKAGE: "bls12-381-signature"
   OCAML_COMPILER: "4.14.0"
+  OPAMSOLVERTIMEOUT: "600"
+  OPAM_PACKAGE: "bls12-381-signature"
   # A workaround against a bug in gitlab-runner's default
   # unzipping implementation, which partially breaks caching for the dune _build cache.
   # See https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27496 for more details.
   FF_USE_FASTZIP: "true"
+  NODE_VERSION: "v19.3.0"
+  NVM_VERSION: "v0.39.2"
+  DEFAULT_BRANCH: "main"
+  CHANGES_FILENAME: "CHANGES.md"
 
 .job-with-cache: &job_with_cache
   image: ${IMAGE_WITH_CACHE}
@@ -24,6 +29,7 @@ stages:
   - test-debian
   - test-alpine
   - install
+  - release-checks
   - doc
   - deploy
 
@@ -81,16 +87,23 @@ lint-c:
     - source "./emsdk_env.sh"
     - cd ../
 
+    # install nvm and node latest version
+    - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash
+    - export NVM_DIR="$HOME/.nvm"
+    - . "$NVM_DIR/nvm.sh"  # This loads nvm
+    - nvm install ${NODE_VERSION}
+
     # List versions and environments
     - ocaml --version
     - opam --version
-    - echo $OPAM_SWITCH_PREFIX
+    - cc --version
     - emcc --version
+    - echo $OPAM_SWITCH_PREFIX
   script:
     - opam install depext --yes
     - opam install . --dry-run --deps-only --locked --with-test --with-doc --yes | awk '/-> installed/{print $3}' | xargs opam depext -iy
     # For benchmark repository
-    - opam install core_bench -y
+    - opam install core_bench core_unix -y
     - dune build
     - dune build @install
     - dune build @runtest
@@ -193,8 +206,8 @@ build:
   script:
     - opam install depext --yes
     - opam install . --dry-run --deps-only --locked --with-test --with-doc --yes | awk '/-> installed/{print $3}' | xargs opam depext -iy
-    # For benchmark repository
-    - opam install core_bench -y
+    # For benchmark repository. Not included in opam deps
+    - opam install core_bench core_unix -y
     - dune build
     # For doc
     - opam install odoc -y
@@ -215,17 +228,37 @@ build:
   before_script:
     # Always update system package manager + setup OPAM env
     - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
     - opam update
+    # gcompat is mandatory because the linker emsdk/clang uses is
+    # /lib64/ld-linux-x86-64.so.2, provided by gcompat
+    # linux headers is required to compile core_unix
+    - sudo apk add build-base python3 gcompat nodejs linux-headers
+
+    # Install emsdk to install emcc
+    - git clone https://github.com/emscripten-core/emsdk.git
+    - cd emsdk
+    - ./emsdk install latest
+    - ./emsdk activate latest
+    - source "./emsdk_env.sh"
+    - cd ../
+
     # List versions and environments
+    - emcc --version
+    - node --version
+    - PATH=/usr/bin:$PATH node --version
     - ocaml --version
     - opam --version
+    - cc --version
     - echo $OPAM_SWITCH_PREFIX
   script:
     - opam install depext --yes
     - opam install . --dry-run --deps-only --locked --with-test --with-doc --yes | awk '/-> installed/{print $3}' | xargs opam depext -iy
+    # For benchmark repository
+    - opam install core_bench core_unix -y
+    - dune build
     - dune build @install
     - dune build @runtest
+    - PATH=/usr/bin:$PATH dune build @runtest-js
   rules:
     - when: always
 
@@ -365,6 +398,7 @@ opam-install-and-remove:
   stage: install
   image: ocaml/opam:debian-ocaml-4.11
   before_script:
+    - sudo apt-get update
     # List versions and environments
     - ocaml --version
     - opam --version
@@ -377,6 +411,7 @@ opam-install-and-remove:
     - opam depext ${OPAM_PACKAGE}.dev -i -y
     - opam install ${OPAM_PACKAGE}.dev -y --deps-only
     - opam install ${OPAM_PACKAGE}.dev -y
+    - opam reinstall ${OPAM_PACKAGE}.dev -y --with-test
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
@@ -385,12 +420,14 @@ opam-install-and-remove-local-switch:
   stage: install
   image: ocaml/opam:debian-ocaml-4.11
   before_script:
+    - sudo apt-get update
     # Run everything in a local switch
-    - opam switch create ./ 4.14.0 --no-install
+    - opam switch create ./ 4.09.1 --no-install
     - eval $(opam config env)
     # List versions and environments
     - ocaml --version
     - opam --version
+    - cc --version
     - echo $OPAM_SWITCH_PREFIX
     - opam repository set-url default https://opam.ocaml.org
     - opam update
@@ -399,9 +436,27 @@ opam-install-and-remove-local-switch:
     - opam depext ${OPAM_PACKAGE}.dev -i -y
     - opam install ${OPAM_PACKAGE}.dev -y --deps-only
     - opam install ${OPAM_PACKAGE}.dev -y
+    - opam reinstall ${OPAM_PACKAGE}.dev -y --with-test
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
+
+check-changes-has-changed:
+  image: ubuntu:20.04
+  stage: release-checks
+  before_script:
+    - apt-get update
+    - apt-get install git -y
+    - git fetch -a
+  script:
+    # we want the files to be different, therefore we negate the condition
+    # https://stackoverflow.com/questions/52145224/invert-a-test-in-gitlab-ci-yml
+    # -> (! COMMAND) because `!` is a reserved character in YAML. ! will be
+    # -> ignore without parenthesis...
+    - (! git diff --exit-code origin/${DEFAULT_BRANCH} -- ${CHANGES_FILENAME})
+  # Only when we do a PR
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 pages:
   <<: *job_with_cache
