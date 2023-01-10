@@ -26,6 +26,12 @@ dune runtest --instrument-with bisect_ppx --force
 bisect-ppx-report html
 ```
 
+Run JavaScript tests
+```
+npm install
+dune build @runtest-js
+```
+
 ## Run the benchmarks
 
 Install `core_bench`:

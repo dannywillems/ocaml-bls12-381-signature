@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "@nomadic-labs/ocaml-bls12-381": ">=6.0.1 <7.0.0"
+    }
+}

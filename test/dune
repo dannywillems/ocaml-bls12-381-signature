@@ -1,3 +1,11 @@
+; Overwriting node executable
+; dune executes JS tests in node when (modes js) is set
+
+(executable
+ (name node_wrapper)
+ (libraries unix)
+ (modules node_wrapper))
+
 (env
  (_
   ; We do not want to have the JavaScript tests executed when `dune build
@@ -6,37 +14,54 @@
   ; work on for the moment.
   ; JavaScript can be run using `dune build @runtest-js`
   (js_of_ocaml
-   (runtest_alias runtest-js))))
+   (runtest_alias runtest-js))
+  ; wrapping node to load the wasm first before executing the JavaScript tests
+  (binaries
+   (%{workspace_root}/test/node_wrapper.exe as node))))
 
-(tests
+; Making executables and splitting in runtest/runtest-js rules because I don't
+; know how to run npm install first. And if (modes js) is given in tests stanza,
+; and npm is prerequisite, it will try to run npm when running `dune build`,
+; which is not expected.
+
+(executables
  (names test_aggregated_signature test_signature)
+ (modules test_aggregated_signature test_signature utils)
  (modes native js)
- (deps
-  (source_tree test_vectors))
  (libraries bls12-381-signature bls12-381 alcotest integers_stubs_js))
 
+; native
+
 (rule
- (alias runtest-js)
  (deps
-  (source_tree test_vectors)
-  preload.js
-  package.json
-  .npmrc
-  (:test test_signature.bc.js))
+  (source_tree test_vectors))
+ (alias runtest)
+ (package bls12-381-signature)
  (action
-  (progn
-   (run npm install)
-   (run node -- preload.js %{test}))))
+  (run %{dep:./test_aggregated_signature.exe})))
+
+(rule
+ (deps
+  (source_tree test_vectors))
+ (alias runtest)
+ (package bls12-381-signature)
+ (action
+  (run %{dep:./test_signature.exe})))
+
+; JS
 
 (rule
  (alias runtest-js)
+ (package bls12-381-signature)
  (deps
-  (source_tree test_vectors)
-  preload.js
-  package.json
-  .npmrc
-  (:test test_aggregated_signature.bc.js))
+  (source_tree test_vectors))
  (action
-  (progn
-   (run npm install)
-   (run node -- preload.js %{test}))))
+  (run node %{dep:./test_signature.bc.js})))
+
+(rule
+ (alias runtest-js)
+ (package bls12-381-signature)
+ (deps
+  (source_tree test_vectors))
+ (action
+  (run node %{dep:./test_aggregated_signature.bc.js})))

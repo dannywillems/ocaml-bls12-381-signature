@@ -22,6 +22,8 @@
  (synopsis "Implementation of BLS signatures for the pairing-friendly curve BLS12-381")
  (depends
   (ocaml (>= 4.08))
+  ; Change package.json accordingly and run `npm install` to generate the lock
+  ; file
   (bls12-381 (and (>= 6.0.1) (< 7.0.0)))
   (alcotest :with-test)
   (bisect_ppx (and :with-test (>= 2.5)))

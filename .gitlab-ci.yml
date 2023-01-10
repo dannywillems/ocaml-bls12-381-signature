@@ -107,6 +107,8 @@ lint-c:
     - dune build
     - dune build @install
     - dune build @runtest
+    # In case of package.json file located at the project root
+    - npm install
     - dune build @runtest-js
   rules:
     - when: always
@@ -258,6 +260,8 @@ build:
     - dune build
     - dune build @install
     - dune build @runtest
+    # In case of package.json file located at the project root
+    - PATH=/usr/bin:$PATH npm install
     - PATH=/usr/bin:$PATH dune build @runtest-js
   rules:
     - when: always
