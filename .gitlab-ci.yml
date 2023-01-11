@@ -13,6 +13,9 @@ variables:
   NVM_VERSION: "v0.39.2"
   DEFAULT_BRANCH: "main"
   CHANGES_FILENAME: "CHANGES.md"
+  # Set to 1 if the command `npm install` must be run before running JavaScript
+  # tests to download NPM dependencies
+  RUN_NPM_INSTALL: "1"
 
 .job-with-cache: &job_with_cache
   image: ${IMAGE_WITH_CACHE}
@@ -107,8 +110,8 @@ lint-c:
     - dune build
     - dune build @install
     - dune build @runtest
-    # In case of package.json file located at the project root
-    - npm install
+    # Run NPM install only if the CI variable RUN_NPM_INSTALL is set to 1
+    - ([[ ${RUN_NPM_INSTALL} == "1" ]] && npm install) || true
     - dune build @runtest-js
   rules:
     - when: always
@@ -258,8 +261,8 @@ build:
     - dune build
     - dune build @install
     - dune build @runtest
-    # In case of package.json file located at the project root
-    - PATH=/usr/bin:$PATH npm install
+    # Run NPM install only if the CI variable RUN_NPM_INSTALL is set to 1
+    - ([[ ${RUN_NPM_INSTALL} == "1" ]] && PATH=/usr/bin:$PATH npm install) || true
     - PATH=/usr/bin:$PATH dune build @runtest-js
   rules:
     - when: always
