@@ -12,7 +12,7 @@ bug-reports:
 depends: [
   "dune" {>= "3.0"}
   "ocaml" {>= "4.08"}
-  "bls12-381" {>= "6.0.1" & < "7.0.0"}
+  "bls12-381" {>= "6.0.0" & < "7.0.0"}
   "alcotest" {with-test}
   "bisect_ppx" {with-test & >= "2.5"}
   "integers_stubs_js" {with-test}

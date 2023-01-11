@@ -24,7 +24,7 @@
   (ocaml (>= 4.08))
   ; Change package.json accordingly and run `npm install` to generate the lock
   ; file
-  (bls12-381 (and (>= 6.0.1) (< 7.0.0)))
+  (bls12-381 (and (>= 6.0.0) (< 7.0.0)))
   (alcotest :with-test)
   (bisect_ppx (and :with-test (>= 2.5)))
   (integers_stubs_js :with-test)))
