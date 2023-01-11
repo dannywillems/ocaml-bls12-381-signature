@@ -3,7 +3,7 @@
 variables:
   IMAGE_WITH_CACHE: "ocaml/opam:debian-testing-opam"
   OCAML_COMPILER: "4.14.0"
-  OPAMSOLVERTIMEOUT: "600"
+  OPAMSOLVERTIMEOUT: "6000"
   OPAM_PACKAGE: "bls12-381-signature"
   # A workaround against a bug in gitlab-runner's default
   # unzipping implementation, which partially breaks caching for the dune _build cache.
