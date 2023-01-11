@@ -10,3 +10,4 @@ package-lock.json
 *.~undo-tree~
 src/c_flags_blst.sexp
 .gitlab-ci-local
+_odoc
