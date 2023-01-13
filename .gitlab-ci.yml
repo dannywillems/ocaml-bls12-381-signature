@@ -16,6 +16,7 @@ variables:
   # Set to 1 if the command `npm install` must be run before running JavaScript
   # tests to download NPM dependencies
   RUN_NPM_INSTALL: "1"
+  OPAM_REPOSITORY_DEFAULT_URL: "https://opam.ocaml.org"
 
 .job-with-cache: &job_with_cache
   image: ${IMAGE_WITH_CACHE}
@@ -78,7 +79,7 @@ lint-c:
     # Always update system package manager + setup OPAM env
     - sudo apt-get update
     - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
+    - opam repository set-url default ${OPAM_REPOSITORY_DEFAULT_URL}
     - opam update
     - sudo apt-get install nodejs python3 -y
 
@@ -190,7 +191,7 @@ build:
     - sudo apt-get update
     - "[ -d _opam ] || opam switch create --yes --no-install . $OCAML_COMPILER"
     - eval $(opam env)
-    - opam repository set-url default https://opam.ocaml.org
+    - opam repository set-url default ${OPAM_REPOSITORY_DEFAULT_URL}
     - opam update
     - sudo apt-get install nodejs python3 -y
 
@@ -341,7 +342,7 @@ opam-install-and-remove:
     - opam --version
     - cc --version
     - echo $OPAM_SWITCH_PREFIX
-    - opam repository set-url default https://opam.ocaml.org
+    - opam repository set-url default ${OPAM_REPOSITORY_DEFAULT_URL}
     - opam update
     # update opam
     - opam install opam-devel -y
@@ -371,7 +372,7 @@ opam-install-and-remove-local-switch:
     - opam --version
     - cc --version
     - echo $OPAM_SWITCH_PREFIX
-    - opam repository set-url default https://opam.ocaml.org
+    - opam repository set-url default ${OPAM_REPOSITORY_DEFAULT_URL}
     - opam update
     # update opam
     - opam install opam-devel -y
