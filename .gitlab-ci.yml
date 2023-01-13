@@ -343,12 +343,17 @@ opam-install-and-remove:
     - echo $OPAM_SWITCH_PREFIX
     - opam repository set-url default https://opam.ocaml.org
     - opam update
+    # update opam
+    - opam install opam-devel -y
+    - sudo cp $OPAM_SWITCH_PREFIX/lib/opam-devel/opam /usr/bin
+    - opam --version
   script:
     - opam pin add ${OPAM_PACKAGE}.dev . --no-action
     - opam depext ${OPAM_PACKAGE}.dev -i -y
     - opam install ${OPAM_PACKAGE}.dev -y --deps-only
     - opam install ${OPAM_PACKAGE}.dev -y
-    - opam reinstall ${OPAM_PACKAGE}.dev -y --with-test
+    - opam remove -a -y ${OPAM_PACKAGE}.dev
+    - opam install ${OPAM_PACKAGE}.dev -y --with-test
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
@@ -368,12 +373,17 @@ opam-install-and-remove-local-switch:
     - echo $OPAM_SWITCH_PREFIX
     - opam repository set-url default https://opam.ocaml.org
     - opam update
+    # update opam
+    - opam install opam-devel -y
+    - sudo cp $OPAM_SWITCH_PREFIX/lib/opam-devel/opam /usr/bin
+    - opam --version
   script:
     - opam pin add ${OPAM_PACKAGE}.dev . --no-action
     - opam depext ${OPAM_PACKAGE}.dev -i -y
     - opam install ${OPAM_PACKAGE}.dev -y --deps-only
     - opam install ${OPAM_PACKAGE}.dev -y
-    - opam reinstall ${OPAM_PACKAGE}.dev -y --with-test
+    - opam remove -a -y ${OPAM_PACKAGE}.dev
+    - opam install ${OPAM_PACKAGE}.dev -y --with-test
     - opam remove -a -y ${OPAM_PACKAGE}.dev
   rules:
     - when: always
