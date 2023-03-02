@@ -35,6 +35,7 @@
 static void finalize_free_pairing(value v) {
   byte *dst = (byte *)blst_pairing_get_dst(Blst_pairing_val(v));
   // See libblst/src/aggregate.c
+  // https://github.com/supranational/blst/issues/104
   if ((uintptr_t)dst != (uintptr_t)42) {
     free(dst);
   }
