@@ -57,6 +57,8 @@ CAMLprim value caml_bls12_381_signature_blst_pairing_init_stubs(
   CAMLparam3(check, dst, dst_length);
   CAMLlocal1(block);
   size_t dst_length_c = ctypes_size_t_val(dst_length);
+  // See
+  // https://gitlab.com/nomadic-labs/cryptography/ocaml-bls12-381/-/merge_requests/195
   byte *dst_copy = malloc(sizeof(byte) * dst_length_c);
   if (dst_copy == NULL) {
     caml_raise_out_of_memory();
